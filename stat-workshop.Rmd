@@ -1,0 +1,486 @@
+---
+title: "Statistics Course"
+author: "Can"
+date: "2024-07-28"
+output: html_document
+---
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+###### 29/07 ######
+
+## Intro to Version Control(git), reproducible research (quarto) and setting up R environment
+
+```{r}
+#- Downloading some packages in Rstudio, it messes up. Therefore some packages would be needed to download in R it self. Otherwise Rstudio will download bunch of additional packages attached to the desired one. Sometimes you might need to download packages in R.
+
+#- lintr: Doesnt run the code but checks the code to see if it is syntactically correct.
+
+#- Rstudio cheatsheets are good to have as a tool.
+#- Being able to incorporate keybindings is also necessary. (option, shift, K)
+```
+
+
+## Packages
+
+```{r}
+#The packages extend the functionality of R. It keeps the functions tidy and doesnt run everything at once so it wont occupy CPU and be faster.
+  
+###installing from CRAN (Comprehensive R Archive Network)
+  install.packages("tidyverse")
+  
+###installing from github 
+  install.packages("remote")
+  library(remote)
+  remotes::install_github("jmgorard/standist")
+  
+  library(tidyverse)
+#When you run the package, it produce some contradictions. Ex: ✖ dplyr::lag()     masks stats::lag() is a result when tidyverse ran. it means stats is masked by dplyr. dplyr was on top so it was read first.
+  
+###namespaces
+  #its good coding practice to always include the name of the package and name of the function. it clears any conflict within the program.
+
+stats::filter() 
+dplyr::filter()
+```
+
+###polymorphism (function overloading)
+
+```{r}
+##There are functions with same name that are giving differing results depending on what information you give
+
+#Ex: function -> mean: if given dates it attributes a different outcome compared to geometric mean of numeric values.
+
+```
+
+### R revision and updates
+Pipes (|>) ( command, shift, M)
+
+```{r}
+#They allow you to daisy chain functions where the outcome of one becomes the input of next.
+# This new symbol is native language of R whereas %>% symbol was part of a package, there is no guarantee for the package change that symbol in time.
+```
+
+Functions
+
+```{r}
+```
+
+##Version Control
+
+1. 
+```{r}
+# Making changes and naming the documents todo1, todo2, todo3.... then losing track of which change happened in which document. This is where version control system comes in. Most popular is github.
+
+# Workspaces --> Staging Area --> Local Repository
+
+# 1- Workspace space is where you have your files in list as untracked by default. It keeps all the files. The ones you want, you push them to staging area.
+
+# 2- Staging Area gives a snapshot of the document. Its a transitional state where you prepare the file to be changed
+
+# 3- Local Repository, you commit.
+
+# The ones that are not in staging area, you can delete them from your computer, they will still be stored as snapshots on git.
+
+# Summary:
+
+# Files Have 4 Stages: 1- untracked, 2- staged, 3- committed, 4- modified.
+
+#Once you finish modifying and everything, you can send it to remote repository from local repository to share it with others. Allows to collaborate.
+```
+
+## Git Configuration
+```{r}
+# define who you are
+#1- git config --global user.name "Your name"
+#2- git config --global user.email "Your email"
+
+#Specify that the initial branch should be called main rather than master
+#1- git config --global init.defaultBranch "main"
+```
+
+## Git - new repository
+```{r}
+mkdir ~/tmp/Test_repo
+cd ~/tmp/Test_repo
+
+git init
+
+#Git repository 
+#Right hand side Projects, new repository, name and save, click on create git, and open the project in an easy access location on your pc.
+
+# You open a file and save it in your project so it will occure in "Status" on the right hand side of the screen.
+# Then if you click on the box it will stage the file. so you press commit to display it in a new screen. add some commit comments and commit it, you can see what has been changed from the screen that says "change" on left upper corner.
+```
+
+#Git - .gitignore
+
+```{r}
+#Ex .RData -> ignores all files with RData
+#Ex. data/ -> ignores all files in data folder
+```
+
+```{r}
+# We can create a couple of scripts with different purposes (analysis, tidying data, plotting etc) and commit them at the same time. You can put tags on milestones. You have to do it on terminal though. -> git tag -a <tag> -m <message>
+
+# Ex git tag -a 'V.1' -m 'Version 1'
+```
+
+
+#Git - rolling back
+
+```{r}
+#1- Checkout -> moves the "head" back to a previous version. If you make a change remember that it will branchout from that checkpoint that you moved to, not moved from.
+
+# It will "detach" the head of the caterpillar. Now the head is moved into a different place. If you change the branches to all branches you can see the rest of the commits are still there just the head is on a different position.
+
+# git checkout main -> return the head to the main.
+
+#2- Reset -> It erases a particular commit from history and move the head to the desired spot. Dangerous and not socially acceptable. If somebody else is editing that branch and you erase it, that will break the code for them.
+
+#3- skipped it because it is dangerous.
+
+#3- Revert -> Adds another commit on to the end and reverts the last modification. The modification is still there but the new branch is starting from the pre-modification state. Allows people to work on the modified version while you are able to undo the modification for the new branch.
+
+# git revert HEAD --no-edit
+
+# ** undo an operation git switch -
+```
+
+##Github
+
+```{r}
+#Access tokens for your computer to interact with Github
+
+#1- Get a github account and verify email
+#2- Create one(or more) Personal Access Tokens (PAT)
+#3- create a remote repository on github
+#4- Push/Pull between remote and local
+
+#Getting the token in the pc 
+# Console -> install.packages("gitcreds")
+# gitcreds::gitcreds_set()
+
+```
+
+
+## Create a repository 
+
+```{r}
+# Profile, your repositories, New repository, give a name and create.
+
+# In the pushing existing repository from the command line.
+
+#1- git remote add origin https://git@github.com:osbili/sandbox.git -> creates a remote origin point
+#2- git branch -M main 
+#3- git push -u origin main -> allows to connect to remote repository
+```
+
+#How to work on stuff
+
+```{r}
+# (Arrows in the environment)
+#1- You commit
+#2- Pull from repository
+#3- Push it back
+
+# **Always pull from repository before you push to repository
+```
+
+
+
+## Work on soomebody elses Repository
+
+```{r}
+#1- Accept invite, reach their repository, copy the code url.
+#2- Rstudio -> new project on environment -> version control -> git -> paste the repository url
+```
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Statistics
+```{r}
+#1- Inference, mathematical models cant test interference/hypothesis
+
+# We add uncertainty to test the hypothesis statistically, and try to see if it can occur without the noise. Ex: y = mx + c + (x(uncertainity)) and try to prove if y = mx + c can happen.
+
+#2- Estimation -> 
+#Using data to estimate "m" and "c" 
+
+#3- Prediction (find y) 
+#Statistical models are not very good at prediction. Because they are good at inference and estimation. 
+# Because you test a limited number of things. You have certain amount of parameters you can include in other words it is low dimensional.If you bombard with too many, its not gonna work well.
+
+#Statistics to use in a fairly well controlled experiments or survey data.
+```
+
+
+## Ways to fit data
+```{r}
+## OLS - Ordinary Least Squares (Relies on residuals being normally distributed)
+# Line that minimizes the sum of the squares (to prevent negative) of those distances. (distance being how further the residuals from the actual line. Refer1 to notebook)
+
+#There are assumptions.
+
+#1- Residuals are normally distributed.
+#2- Homogeneity of variance. Residuals must be drawn equally from the population (Refer2 to notebook.
+
+# We have to try different slopes to find the best fitting option. 
+```
+
+
+## Maximum likelihood
+```{r}
+# You try to fit multiple standard distribution curves into the outcomes and calculate the outcomes likelihood of occurance in that distribution. Then if you match those likelihood points. You will get the maximum likelihood curve and the highest point of it is the maximum likelihood. 
+
+# Distribution that maximizes the likelihood of your data.
+```
+
+#Normal distribution
+```{r}
+# Ex: Gaussian,
+
+#Depends on mean and standard deviation.
+#Types of data like height, length. 
+```
+
+#T distribution
+```{r}
+#Depends on mean, standard deviation and degree of freedom.
+#Degree of freedom > 30 it is basically gaussian distribution.
+#Good for ecological data because it handles the outliers better.
+```
+
+#Poission
+```{r}
+# Represents the distribution of counts. For integers. It represents the average. How many average can fit in that sampling unit.
+
+# Lambda = mean = S.d^2 = df
+
+#it allows higher means to be measured with lower means because higher the mean, higher the variance (S.d^2) so ex: quadrant data, some areas have low means on quadrants some might high.
+
+# Dispersion = ratio of variance to mean = S.d^2/µ = 1
+
+#Ratio can change. Animals can scatter or accumulate. if the variance is bigger than mean we say it is overly dispersed. But we assume mean and variance are equal, if not, our test samples are not good.
+
+```
+
+#Binomial/Negative binomial
+```{r}
+# Distribution of Proportions.
+
+# Ex: Coin tosses, looks similar to Poission except it is bounded by both ends. 0 and 1. You need to consider dispersion, it is still an issue to consider.
+
+#Special case of Binomial called Bernouli which is binary data. Ex: Dead or alive. 0 or 1. Presence or absence. Rather than 3/10 heads or tails of coin tosses.
+
+# Negative binomial, unlike the binomial which only depends on lambda = variance ... it depends on dispersion. It is used for over dispersed data (mentioned above), good for ecological data.
+```
+
+##Gamma Distribution
+```{r}
+#Good for gaussian, when you have values close to 0. It is skewed and cut off at 0.
+#Ex: Treatment and how long it took to work. Some can be within minutes where some can take hours or days. Assesing of measuring duration.
+```
+
+## Beta Distribution
+```{r}
+#Percentages, percentage cover datas. Bound at both ends. You dont need to have integer data. Allow you to handle continuous data between 0 and 1.
+```
+
+# Link function (Refer4)
+```{r}
+# Ex: Poission is good for snail numbers
+#for lambda = b0 + b1xi
+#for any number of b0 and b1 it can be any outcome. but there cant be negative amount of snails. so the equation even though it is correct, does not apply for snail count. Because the equation and distribution are on different scale. To bring them onto same scale, we use something called link function. Ex: for poisson the equation should be exposed to "log" scale.
+# Ex: Gaussian has link function is "identity" which is 1. it is itself.
+# Ex: T distribution has "identity" link, which is 1. it is itself. 
+# Ex: Negative binomial -> log link.
+#Ex; for binomial, bernouli, beta -> logit. which is log(probability/1-probability). (probability/1-probability) is called odds.
+#Ex: Gamma -> it is not default but log link is best for gamma.
+```
+
+#Bayesian Distribution (Refer5)
+```{r}
+#How we treat probability -> Frequentists vs Bayesian
+# Frequentist -> Probability of data given hypothesis. (P(H|D))
+# Bayesian -> Probability of hypothesis given data. (P(D|H))
+
+#True means you dont know what it is in Frequentist, they have one fixed outcome, they dont know what it means. 
+#Bayesian is distribution of your belief, there is no one slope, there is distributions of slopes, intercepts, you an get the mean of summary of those but you are always dealing with distribution.
+```
+
+```{r}
+# p-values are driven by sample size in frequentist. Most important property has been ignored, which is the slope. magnitutude of effect and how much evidence we got. (Ex: percentage difference between each group)
+```
+
+```{r}
+#P(H|D) = P(D|H) x P(H) / P(D) 
+
+#P(D|H) -> Probability of data given hypothesis -> likelihood
+#P(H) -> Probability of hypothesis -> prior probability
+#P(D) -> probability of data
+
+#probability = likelihood x prior probability - normalizing constant.
+```
+
+##MCMC Sampling
+```{r}
+#Marchov Chain Carlo Sampling -> draw samples proportional to likelihood
+# If we want to map a terrain using a laser beam mounted drone.
+# We start from a point and keep that value, the second measurement, lets say its lower than the initial on terrain. Then we create a random number generator between 0 and 1. if the number is smaller than the ratio of the second number to initial, we keep it, if the ratio is higher we reject it. but if the number is bigger than the initial number we definitely keep it. 
+```
+
+## MCMC Autocorrelation
+```{r}
+# We need diagnostic tools to determine if the measurements were done correctly. Trace plots. Refer5
+# Summary stats on non-independent values are biased
+# Thinnning factor = 1
+# Check how many draws it takes to become totally independent. So seperate the data with the independency amount. EX: if the thinning factor = 10 you get every 1/10 of the draw. then you achieve independency and less correlation among originally independent areas.
+# In order to keep calculating a decent mean you need to have a lot of observation (thinning 1/10 -> 10.000 observation.)
+# We should have minimum 1000 after thinning.
+```
+
+
+### ----------------------------------- ###
+### ----------------------------------- ###
+### ----------------------------------- ###
+
+
+# Generalized Additive Model
+
+```{r}
+# Less about hypothesis -> more about trends.
+# You can still test hypothesis though.
+
+# Generalized Linear Model -> the data is not necessarily linear shape it is in a linear model. 
+# All the predictors, coefficients are on linear. -> b0 + b1X1 + b2X2 ....
+
+# Non-linear ones -> ~X^b where it becomes the power.
+
+# Sine wave stretched downwards is an example for GAM
+
+# Allow you to have random effects.
+
+## Simple GLM
+
+#g(E(y)) = b0 + x1b1
+```
+
+
+# Piecewise Regression
+```{r}
+# We can force 1st and 2nd derivatives to be the same at break-point.
+# 2 Lines -> 3 cuts in a data. -> cuts = knots like knots on a rope.
+
+# Decompose our single continuous predictor to intercept and slope.
+
+# What if we had 2 breakpoints?
+
+```
+
+
+# Basis function 
+```{r}
+# There are basis functions that will be pre determined which looks certain ways, we will use 
+
+# Decompose our single continuous predictor to intercept and bunch of slopes depending on how many knots and how many degrees of polynome and fit in a model.
+
+# There is a pre-determine shape for it, and to achieve the distribution our data gives we need to calculate the "weight" where each break multiplies by in order to achieve the d
+```
+
+
+# Splines
+```{r}
+# We ask third order polynomials to third order polynomials.
+
+# Knots amount can vary and it will effect the fitness of the model over the trend. The model can be under-fit (being too smooth) and over-fit(instead of a trend it will follow the samples).
+
+# How do you decide? 
+
+# We can use residuals -> from under-estimated to over-estimated -> residuals would be smaller and smaller.
+# Dispersion? 
+
+# The model needs to be penalized for over-fit -> we can introduce another predictor to
+
+# One way to find a balance how to find correct amount of knots to determine -> cross validation -> leave one observation out and predict a number then the other one out, then other one out -> afterwards you can try knot number for each situation and come up with a knot number. (LOO)
+
+# For the complexity -> over-fit models can be penalized, when you do that, the GAM fits the polynomial to optimum number of knots.
+```
+
+
+# Cubic regression Spline
+```{r}
+# Very common spline to use.
+
+# There are other splines:
+
+# 1- Penalized splines -> There would be more knots where there is more data. Which makes sense
+# 2- Periodicity splines -> They are cyclical splines (ex; lunar cycle, yearly stuff)
+# 3-
+```
+
+# Simple regression trees
+```{r}
+#split(partition) data up into major chunks
+
+#Predicting individual data points is over-fit.
+#ensemble of bad prediction points leading to a good prediction of trend.
+```
+
+
+# Cross Validation
+```{r}
+# Cross validation helps the program to reach to good set of tree number. If more -> over-fit
+# Program can be introduced partial data and feed it into two different trees. Which will remove a portion of your data to be used as test and training cross validation . If you shuffle your data and feed a portion of it to the tree, after the analysation, re-do the process. (That chunk of data is called a bag) This process is called out of bag cross validation. (Usually a 50-50 split).
+
+# You can ask for how many trees needed.
+# The regression trees offer why the which parameter is important. (count up proportion of splits that each predictor is involved in)
+
+# Cant get uncertainity.
+```
+
+
+# Multivariate Analysis
+```{r}
+# So far we have been dealing with single response, what if we are interested in ex: response of 100s of species response to a variable.
+
+# 1- Expose community patterns
+# 2- 
+# 3- Describe site similarity -> Coral community here is similar to one over there? is the community recovered? not just a species abundance.
+# 4- Test community hypothesis
+
+
+## Correlating predictors will be able to incorporated with multivariate analysis without dropping any.
+## 100s of species can be combined into one or two under a new community or whatever then analysed.
+
+# Is only logically available or logically works if there is correlation. If they are independent, it doesnt work.
+
+# Correlation Assumptions
+
+# Linearity, homogeneity, normality
+
+# PCA -> output -> ordination -> correlation analysis
+# Good metric should focus on what they share in common, not they dont share.
+```
+
+```{r}
+
+# CA -> Correspondance Analysis -> more suitable for ecological abundance data. based on chi-square not euclodian.
+# CCA -> Constrained Correspondance Analysis -> guided by some predictors.
+# PCoA ->  You choose a metric that is appropriate to your data.
+# MDS -> multi-dimensional scaling
+```
+
+## ----------------------------- ##
+```{r}
+# It is good to create a folder called R
+# Creating a main script starting with 0 -> that is like a menu -> pointing you to different script with necessary stuff
+
+## STRONG RECOMMENDATION -> Splitting scripts in to their respective tasks, Ex, different scripts for: data reading, processing, modelling, summarising.
+
+# -> More organized and keeping each script much smaller.
+# -> Ex; Once the model is fit you wouldn't need to re-run that again next time you come. 
+```
+
+## SAVE
